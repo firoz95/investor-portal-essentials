@@ -104,7 +104,7 @@ const FinancialBreakdown: React.FC<FinancialBreakdownProps> = ({
                 animationEasing="ease-out"
               >
                 {coloredData.map((entry, index) => (
-                  <Bar 
+                  <cell 
                     key={`cell-${index}`} 
                     fill={entry.color} 
                   />
