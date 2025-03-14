@@ -1,6 +1,6 @@
 
 import React from "react";
-import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, Legend, TooltipProps } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, Legend, TooltipProps, Cell } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { NameType, ValueType } from "recharts/types/component/DefaultTooltipContent";
 
@@ -104,7 +104,7 @@ const FinancialBreakdown: React.FC<FinancialBreakdownProps> = ({
                 animationEasing="ease-out"
               >
                 {coloredData.map((entry, index) => (
-                  <cell 
+                  <Cell 
                     key={`cell-${index}`} 
                     fill={entry.color} 
                   />
