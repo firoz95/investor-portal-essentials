@@ -1,12 +1,13 @@
 
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { PieChart, ChevronRight, Lock, Mail } from "lucide-react";
+import { ChevronRight, Lock, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
+import Logo from "@/components/Logo";
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -47,8 +48,7 @@ const LoginPage: React.FC = () => {
       <header className="w-full px-6 py-4">
         <div className="container mx-auto">
           <div className="flex items-center">
-            <PieChart className="h-6 w-6 mr-2" />
-            <span className="font-semibold text-lg">Investment Fund Portal</span>
+            <Logo size="sm" />
           </div>
         </div>
       </header>
@@ -125,7 +125,7 @@ const LoginPage: React.FC = () => {
 
       <footer className="py-4 text-center text-sm text-muted-foreground">
         <div className="container mx-auto">
-          <p>© {new Date().getFullYear()} Investment Fund Portal. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} New Age Entrepreneurs Fund. All rights reserved.</p>
         </div>
       </footer>
     </div>

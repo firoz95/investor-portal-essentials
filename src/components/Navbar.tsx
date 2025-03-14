@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
@@ -7,7 +6,6 @@ import {
   LayoutDashboard, 
   FileText, 
   DollarSign, 
-  PieChart, 
   User, 
   LogOut,
   Menu,
@@ -23,6 +21,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { investorProfile } from "@/utils/mockData";
+import Logo from "@/components/Logo";
 
 const Navbar: React.FC = () => {
   const location = useLocation();
@@ -42,8 +41,7 @@ const Navbar: React.FC = () => {
       <nav className="container mx-auto flex justify-between items-center h-16 px-4 sm:px-6 lg:px-8">
         <div className="flex items-center">
           <Link to="/" className="text-xl font-semibold text-foreground flex items-center space-x-2">
-            <PieChart className="h-6 w-6" />
-            <span>Investment Portal</span>
+            <Logo size="sm" />
           </Link>
         </div>
 
