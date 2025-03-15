@@ -9,7 +9,7 @@ const Index = () => {
   const navigate = useNavigate();
 
   const handleLogin = () => {
-    navigate("/dashboard");
+    navigate("/login");
   };
 
   return (
@@ -27,13 +27,13 @@ const Index = () => {
         <CardContent>
           <div className="space-y-4">
             <p className="text-sm text-center text-muted-foreground">
-              This is a demo portal. Click the button below to view the dashboard.
+              This is a demo portal. Click the button below to view the login page.
             </p>
           </div>
         </CardContent>
         <CardFooter>
           <Button className="w-full" onClick={handleLogin}>
-            Enter Dashboard
+            Enter Portal
           </Button>
         </CardFooter>
       </Card>

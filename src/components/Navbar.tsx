@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
@@ -9,7 +10,8 @@ import {
   User, 
   LogOut,
   Menu,
-  X
+  X,
+  PieChart
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {

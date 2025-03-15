@@ -10,7 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import Logo from "@/components/Logo";
 
 const LoginPage: React.FC = () => {
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
@@ -20,20 +20,20 @@ const LoginPage: React.FC = () => {
     e.preventDefault();
     setIsLoading(true);
 
-    // Simulate API request
+    // Check for superadmin credentials
     setTimeout(() => {
       setIsLoading(false);
-      // Any email/password will work in this demo
-      if (email && password) {
+      
+      if (username === "superadmin" && password === "NAFA@1234") {
         toast({
           title: "Login successful",
-          description: "Welcome back to your investment portal.",
+          description: "Welcome to the New Age Entrepreneurs Fund portal.",
         });
         navigate("/dashboard");
       } else {
         toast({
           title: "Login failed",
-          description: "Please enter both email and password.",
+          description: "Invalid username or password. Please try again.",
           variant: "destructive",
         });
       }
@@ -42,8 +42,8 @@ const LoginPage: React.FC = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-background to-secondary/30">
-      <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_top_right,_rgba(155,135,245,0.1),_transparent_40%)] pointer-events-none"></div>
-      <div className="absolute top-1/2 left-1/2 w-full h-full bg-[radial-gradient(circle_at_bottom_left,_rgba(155,135,245,0.05),_transparent_30%)] pointer-events-none"></div>
+      <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_top_right,_rgba(75,46,131,0.1),_transparent_40%)] pointer-events-none"></div>
+      <div className="absolute top-1/2 left-1/2 w-full h-full bg-[radial-gradient(circle_at_bottom_left,_rgba(75,46,131,0.05),_transparent_30%)] pointer-events-none"></div>
       
       <header className="w-full px-6 py-4">
         <div className="container mx-auto">
@@ -65,16 +65,16 @@ const LoginPage: React.FC = () => {
             <CardContent className="p-6">
               <form onSubmit={handleLogin} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
+                  <Label htmlFor="username">Username</Label>
                   <div className="relative">
                     <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                     <Input
-                      id="email"
-                      type="email"
-                      placeholder="john.doe@example.com"
+                      id="username"
+                      type="text"
+                      placeholder="username"
                       className="pl-10"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
+                      value={username}
+                      onChange={(e) => setUsername(e.target.value)}
                       required
                     />
                   </div>

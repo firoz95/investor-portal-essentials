@@ -26,7 +26,7 @@ export default {
 				background: 'hsl(var(--background))',
 				foreground: 'hsl(var(--foreground))',
 				primary: {
-					DEFAULT: 'hsl(var(--primary))',
+					DEFAULT: '#4B2E83', // Deep Purple
 					foreground: 'hsl(var(--primary-foreground))'
 				},
 				secondary: {
@@ -39,7 +39,7 @@ export default {
 				},
 				muted: {
 					DEFAULT: 'hsl(var(--muted))',
-					foreground: 'hsl(var(--muted-foreground))'
+					foreground: '#808080' // Soft Gray
 				},
 				accent: {
 					DEFAULT: 'hsl(var(--accent))',
@@ -51,7 +51,7 @@ export default {
 				},
 				card: {
 					DEFAULT: 'hsl(var(--card))',
-					foreground: 'hsl(var(--card-foreground))'
+					foreground: '#222222' // Black
 				},
 				sidebar: {
 					DEFAULT: 'hsl(var(--sidebar-background))',
