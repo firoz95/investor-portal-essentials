@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { 
@@ -14,6 +13,7 @@ import {
   dashboardSummary, 
   formatCurrency, 
   formatDate,
+  capitalCommitment,
 } from "@/utils/mockData";
 import NotificationsSection from "@/components/NotificationsSection";
 import NAVSection from "@/components/NAVSection";
@@ -31,7 +31,6 @@ const Dashboard: React.FC = () => {
   const navigate = useNavigate();
   const [showTopBar, setShowTopBar] = useState(false);
   
-  // Function to handle scroll events
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > 100) {
@@ -50,7 +49,6 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Fixed top bar that appears on scroll */}
       <div className={`fixed top-0 left-0 w-full bg-background/90 backdrop-blur-sm border-b border-border z-50 transition-all duration-300 ${showTopBar ? 'translate-y-0' : '-translate-y-full'}`}>
         <div className="container mx-auto flex items-center justify-between h-16 px-4 sm:px-6 lg:px-8">
           <div className="flex items-center">
@@ -68,7 +66,6 @@ const Dashboard: React.FC = () => {
         </div>
       </div>
       
-      {/* Header */}
       <header className="bg-background border-b border-border">
         <div className="container mx-auto py-4 px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
@@ -86,7 +83,6 @@ const Dashboard: React.FC = () => {
         </div>
       </header>
       
-      {/* Main content */}
       <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-8">
         <div>
           <h1 className="text-3xl font-bold tracking-tight text-[#4B2E83]">Dashboard</h1>
@@ -95,10 +91,8 @@ const Dashboard: React.FC = () => {
           </p>
         </div>
         
-        {/* Notifications Section */}
         <NotificationsSection />
         
-        {/* Summary Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <StatusCard
             title="Total Commitment"
@@ -130,30 +124,23 @@ const Dashboard: React.FC = () => {
           />
         </div>
         
-        {/* NAV Section */}
         <div className="grid grid-cols-1 gap-6">
           <NAVSection />
         </div>
         
-        {/* Capital Activity and Fund Investments */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <CapitalActivitySection />
           <FundInvestmentsSection />
         </div>
         
-        {/* Co-Investments Section (conditional) */}
         <CoInvestmentsSection />
         
-        {/* Documents Section */}
         <DocumentsSection />
         
-        {/* Investor Information */}
         <InvestorInfoSection />
         
-        {/* Fund Technicals */}
         <FundTechnicalsSection />
         
-        {/* Disclaimer */}
         <DisclaimerSection />
       </main>
       
