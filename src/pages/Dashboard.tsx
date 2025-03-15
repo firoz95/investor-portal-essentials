@@ -10,7 +10,8 @@ import {
   PieChart,
   Users,
   Info,
-  ChevronRight
+  ChevronRight,
+  Power
 } from "lucide-react";
 import StatusCard from "@/components/StatusCard";
 import { Button } from "@/components/ui/button";
@@ -37,7 +38,6 @@ import {
   NavigationMenu,
   NavigationMenuContent,
   NavigationMenuItem,
-  NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
@@ -65,11 +65,11 @@ const Dashboard: React.FC = () => {
   const investorInfoRef = useRef<HTMLDivElement>(null);
   const fundTechnicalsRef = useRef<HTMLDivElement>(null);
   
-  // Define all sections
+  // Define all sections with updated icons
   const sections: SectionRef[] = [
     { id: "dashboard", ref: dashboardRef, label: "Dashboard", icon: <LayoutDashboard className="h-4 w-4 mr-1" /> },
     { id: "nav", ref: navRef, label: "NAV", icon: <TrendingUp className="h-4 w-4 mr-1" /> },
-    { id: "capital", ref: capitalActivityRef, label: "Capital Activity", icon: <DollarSign className="h-4 w-4 mr-1" /> },
+    { id: "capital", ref: capitalActivityRef, label: "Capital Activity", icon: <span className="mr-1">₹</span> },
     { id: "coinvestments", ref: coInvestmentsRef, label: "Co-Investments", icon: <PieChart className="h-4 w-4 mr-1" /> },
     { id: "documents", ref: documentsRef, label: "Documents", icon: <FileText className="h-4 w-4 mr-1" /> },
     { id: "investor", ref: investorInfoRef, label: "Investor Info", icon: <Users className="h-4 w-4 mr-1" /> },
@@ -121,7 +121,7 @@ const Dashboard: React.FC = () => {
       <div className={`fixed top-0 left-0 w-full bg-background/90 backdrop-blur-sm border-b border-border z-50 transition-all duration-300 ${showTopBar ? 'translate-y-0' : '-translate-y-full'}`}>
         <div className="container mx-auto flex items-center justify-between h-16 px-4 sm:px-6 lg:px-8">
           <div className="flex items-center">
-            <Logo size="sm" />
+            <Logo size="sm" showText={false} />
             
             <nav className="ml-6 hidden md:flex">
               <ul className="flex space-x-1">
@@ -176,13 +176,15 @@ const Dashboard: React.FC = () => {
               </NavigationMenu>
             </div>
           </div>
-          <div className="flex items-center space-x-4">
-            <div className="text-sm">
-              <span className="text-muted-foreground">Welcome, </span>
-              <span className="font-medium">{investorProfile.name}</span>
-            </div>
-            <Button variant="outline" size="sm" onClick={() => navigate("/login")}>
-              Logout
+          <div className="flex items-center">
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              onClick={() => navigate("/login")}
+              title="Logout"
+              aria-label="Logout"
+            >
+              <Power className="h-5 w-5 text-muted-foreground hover:text-destructive" />
             </Button>
           </div>
         </div>
@@ -207,7 +209,7 @@ const Dashboard: React.FC = () => {
       
       <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-10">
         <div ref={dashboardRef} id="dashboard-section">
-          <h1 className="text-3xl font-bold tracking-tight text-[#4B2E83]">Dashboard</h1>
+          <h1 className="text-3xl font-bold tracking-tight text-[#000000]">Dashboard</h1>
           <p className="text-muted-foreground">
             Welcome to your investment portal
           </p>
@@ -241,23 +243,23 @@ const Dashboard: React.FC = () => {
           <StatusCard
             title="Class of Units"
             value={capitalCommitment.class}
-            subtitle={`${formatCurrency(capitalCommitment.unitPrice)} per unit`}
+            subtitle={<AmountDisplay amount={capitalCommitment.unitPrice} /> + " per unit"}
             icon={<FileText className="h-4 w-4" />}
           />
         </div>
         
         <div ref={navRef} id="nav-section" className="pt-8">
           <div className="flex items-center mb-4">
-            <TrendingUp className="h-5 w-5 mr-2 text-[#4B2E83]" />
-            <h2 className="text-2xl font-bold text-[#4B2E83]">NAV</h2>
+            <TrendingUp className="h-5 w-5 mr-2 text-[#43A66A]" />
+            <h2 className="text-2xl font-bold text-black">NAV</h2>
           </div>
           <NAVSection />
         </div>
         
         <div ref={capitalActivityRef} id="capital-section" className="pt-8">
           <div className="flex items-center mb-4">
-            <DollarSign className="h-5 w-5 mr-2 text-[#4B2E83]" />
-            <h2 className="text-2xl font-bold text-[#4B2E83]">Capital Activity</h2>
+            <DollarSign className="h-5 w-5 mr-2 text-[#43A66A]" />
+            <h2 className="text-2xl font-bold text-black">Capital Activity</h2>
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <CapitalActivitySection />
@@ -267,32 +269,32 @@ const Dashboard: React.FC = () => {
         
         <div ref={coInvestmentsRef} id="coinvestments-section" className="pt-8">
           <div className="flex items-center mb-4">
-            <PieChart className="h-5 w-5 mr-2 text-[#4B2E83]" />
-            <h2 className="text-2xl font-bold text-[#4B2E83]">Co-Investments</h2>
+            <PieChart className="h-5 w-5 mr-2 text-[#43A66A]" />
+            <h2 className="text-2xl font-bold text-black">Co-Investments</h2>
           </div>
           <CoInvestmentsSection />
         </div>
         
         <div ref={documentsRef} id="documents-section" className="pt-8">
           <div className="flex items-center mb-4">
-            <FileText className="h-5 w-5 mr-2 text-[#4B2E83]" />
-            <h2 className="text-2xl font-bold text-[#4B2E83]">Documents</h2>
+            <FileText className="h-5 w-5 mr-2 text-[#43A66A]" />
+            <h2 className="text-2xl font-bold text-black">Documents</h2>
           </div>
           <DocumentsSection />
         </div>
         
         <div ref={investorInfoRef} id="investor-section" className="pt-8">
           <div className="flex items-center mb-4">
-            <Users className="h-5 w-5 mr-2 text-[#4B2E83]" />
-            <h2 className="text-2xl font-bold text-[#4B2E83]">Investor Information</h2>
+            <Users className="h-5 w-5 mr-2 text-[#43A66A]" />
+            <h2 className="text-2xl font-bold text-black">Investor Information</h2>
           </div>
           <InvestorInfoSection />
         </div>
         
         <div ref={fundTechnicalsRef} id="fund-section" className="pt-8">
           <div className="flex items-center mb-4">
-            <Info className="h-5 w-5 mr-2 text-[#4B2E83]" />
-            <h2 className="text-2xl font-bold text-[#4B2E83]">Fund Information</h2>
+            <Info className="h-5 w-5 mr-2 text-[#43A66A]" />
+            <h2 className="text-2xl font-bold text-black">Fund Information</h2>
           </div>
           <FundTechnicalsSection />
         </div>

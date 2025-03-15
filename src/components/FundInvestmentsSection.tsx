@@ -2,7 +2,8 @@
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
-import { fundInvestments, formatCurrency } from "@/utils/mockData";
+import { fundInvestments } from "@/utils/mockData";
+import AmountDisplay, { formatAmountInCrores } from "@/components/AmountDisplay";
 
 const FundInvestmentsSection = () => {
   const data = fundInvestments.map(investment => ({
@@ -49,6 +50,21 @@ const FundInvestmentsSection = () => {
     );
   };
 
+  // Custom tooltip for the pie chart
+  const CustomTooltip = ({ active, payload }: any) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className="bg-background border border-border p-2 rounded-md shadow-md text-sm">
+          <p className="font-medium">{payload[0].name}</p>
+          <p className="text-xs mt-1">
+            <AmountDisplay amount={payload[0].value} fullDisplay={true} />
+          </p>
+        </div>
+      );
+    }
+    return null;
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -70,12 +86,10 @@ const FundInvestmentsSection = () => {
                 dataKey="value"
               >
                 {data.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={entry.color} />
+                  <Cell key={`cell-${index}`} fill={entry.color || "#43A66A"} />
                 ))}
               </Pie>
-              <Tooltip 
-                formatter={(value) => [formatCurrency(value as number), "Amount"]} 
-              />
+              <Tooltip content={<CustomTooltip />} />
               <Legend />
             </PieChart>
           </ResponsiveContainer>
@@ -86,12 +100,12 @@ const FundInvestmentsSection = () => {
               <div className="flex items-center space-x-2">
                 <div 
                   className="w-3 h-3 rounded-full" 
-                  style={{ backgroundColor: investment.color }}
+                  style={{ backgroundColor: investment.color || "#43A66A" }}
                 ></div>
                 <span className="font-medium text-sm">{investment.name}</span>
               </div>
               <div className="mt-1">
-                <span className="text-sm">{formatCurrency(investment.amount)}</span>
+                <AmountDisplay amount={investment.amount} className="text-sm" />
               </div>
             </div>
           ))}

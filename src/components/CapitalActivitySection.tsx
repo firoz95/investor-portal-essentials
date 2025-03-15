@@ -7,7 +7,6 @@ import {
   capitalContributions, 
   distributions, 
   feeCharges, 
-  formatCurrency, 
   formatDate, 
   getFeeStructureForInvestor,
   getTotalCapitalContributed, 
@@ -16,6 +15,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { ArrowRightIcon, DollarSign, TrendingUp, PieChart, PercentIcon } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
+import AmountDisplay from "@/components/AmountDisplay";
 
 const CapitalActivitySection = () => {
   const [activeTab, setActiveTab] = useState("overview");
@@ -45,13 +45,17 @@ const CapitalActivitySection = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               <div className="bg-muted/30 rounded-lg p-4">
                 <div className="text-sm text-muted-foreground">Total Commitment</div>
-                <div className="text-2xl font-bold mt-1">{formatCurrency(capitalCommitment.total)}</div>
+                <div className="text-2xl font-bold mt-1">
+                  <AmountDisplay amount={capitalCommitment.total} />
+                </div>
                 <div className="text-xs text-muted-foreground mt-1">Class {capitalCommitment.class}</div>
               </div>
               
               <div className="bg-muted/30 rounded-lg p-4">
                 <div className="text-sm text-muted-foreground">Total Contributed</div>
-                <div className="text-2xl font-bold mt-1">{formatCurrency(totalContributed)}</div>
+                <div className="text-2xl font-bold mt-1">
+                  <AmountDisplay amount={totalContributed} />
+                </div>
                 <div className="text-xs text-muted-foreground mt-1">
                   {contributionPercentage.toFixed(1)}% of commitment
                 </div>
@@ -59,7 +63,9 @@ const CapitalActivitySection = () => {
               
               <div className="bg-muted/30 rounded-lg p-4">
                 <div className="text-sm text-muted-foreground">Remaining Commitment</div>
-                <div className="text-2xl font-bold mt-1">{formatCurrency(remainingCommitment)}</div>
+                <div className="text-2xl font-bold mt-1">
+                  <AmountDisplay amount={remainingCommitment} />
+                </div>
                 <div className="text-xs text-muted-foreground mt-1">
                   {(100 - contributionPercentage).toFixed(1)}% of commitment
                 </div>
@@ -68,7 +74,7 @@ const CapitalActivitySection = () => {
               <div className="bg-muted/30 rounded-lg p-4">
                 <div className="text-sm text-muted-foreground">Total Fees Paid</div>
                 <div className="text-2xl font-bold mt-1">
-                  {formatCurrency(feeCharges.reduce((sum, fee) => sum + fee.amount, 0))}
+                  <AmountDisplay amount={feeCharges.reduce((sum, fee) => sum + fee.amount, 0)} />
                 </div>
                 <div className="text-xs text-muted-foreground mt-1">
                   See Fee Details
@@ -115,7 +121,9 @@ const CapitalActivitySection = () => {
                 <div key={contribution.id} className="border rounded-md p-4">
                   <div className="flex justify-between">
                     <div>
-                      <h4 className="font-medium">{formatCurrency(contribution.amount)}</h4>
+                      <h4 className="font-medium">
+                        <AmountDisplay amount={contribution.amount} />
+                      </h4>
                       <p className="text-xs text-muted-foreground mt-1">
                         {formatDate(contribution.date)} · {contribution.method}
                       </p>
@@ -146,7 +154,9 @@ const CapitalActivitySection = () => {
                       </p>
                     </div>
                     <div className="text-right">
-                      <h4 className="font-medium">{formatCurrency(fee.amount)}</h4>
+                      <h4 className="font-medium">
+                        <AmountDisplay amount={fee.amount} />
+                      </h4>
                       <p className="text-xs text-muted-foreground mt-1">
                         {fee.status}
                       </p>
@@ -173,7 +183,9 @@ const CapitalActivitySection = () => {
                         </p>
                       </div>
                       <div className="text-right">
-                        <h4 className="font-medium">{formatCurrency(distribution.amount)}</h4>
+                        <h4 className="font-medium">
+                          <AmountDisplay amount={distribution.amount} />
+                        </h4>
                       </div>
                     </div>
                   </div>

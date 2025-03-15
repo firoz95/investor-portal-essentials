@@ -5,6 +5,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 interface AmountDisplayProps {
   amount: number;
   className?: string;
+  fullDisplay?: boolean;
 }
 
 // Helper to convert amount to crores with appropriate rounding
@@ -18,7 +19,12 @@ const formatFullAmount = (amount: number): string => {
   return `₹ ${amount.toLocaleString('en-IN')}`;
 };
 
-const AmountDisplay: React.FC<AmountDisplayProps> = ({ amount, className = "" }) => {
+const AmountDisplay: React.FC<AmountDisplayProps> = ({ amount, className = "", fullDisplay = false }) => {
+  // If fullDisplay is true, just show the full amount without the tooltip
+  if (fullDisplay) {
+    return <span className={className}>{formatFullAmount(amount)}</span>;
+  }
+  
   return (
     <TooltipProvider>
       <Tooltip>
@@ -35,4 +41,6 @@ const AmountDisplay: React.FC<AmountDisplayProps> = ({ amount, className = "" })
   );
 };
 
+// Export these helper functions for use in other components
+export { formatAmountInCrores, formatFullAmount };
 export default AmountDisplay;
