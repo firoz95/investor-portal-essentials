@@ -25,7 +25,7 @@ const statusCardVariants = cva(
 
 interface StatusCardProps extends VariantProps<typeof statusCardVariants> {
   title: string;
-  value: string | number;
+  value: string | number | React.ReactNode;
   icon?: React.ReactNode;
   trend?: {
     value: number;
