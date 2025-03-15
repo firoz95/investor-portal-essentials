@@ -30,8 +30,7 @@ const NotificationsSection = () => {
                   Capital Call Due: {formatDate(notice.dueDate)}
                 </h3>
                 <p className="text-sm text-red-700 mt-1">
-                  Please arrange for a payment of {formatCurrency(notice.amount)} ({notice.percentage}% of your commitment)
-                  towards {notice.purpose}.
+                  Please arrange for a payment of {formatCurrency(notice.amount)} ({notice.percentage}% of your commitment).
                 </p>
                 <div className="mt-2 flex items-center">
                   <InfoIcon className="h-4 w-4 text-red-600 mr-1" />
