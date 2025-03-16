@@ -20,14 +20,20 @@ const LoginPage: React.FC = () => {
     e.preventDefault();
     setIsLoading(true);
 
-    // Check for superadmin credentials
+    // Check credentials
     setTimeout(() => {
       setIsLoading(false);
       
       if (username === "superadmin" && password === "NAFA@1234") {
         toast({
           title: "Login successful",
-          description: "Welcome to the New Age Entrepreneurs Fund portal.",
+          description: "Welcome to the New Age Entrepreneurs Fund admin portal.",
+        });
+        navigate("/admin");
+      } else if (username === "gkft" && password === "gkft") {
+        toast({
+          title: "Login successful",
+          description: "Welcome to the New Age Entrepreneurs Fund investor portal.",
         });
         navigate("/dashboard");
       } else {
@@ -59,7 +65,7 @@ const LoginPage: React.FC = () => {
             <CardHeader className="space-y-1 pt-8 pb-4">
               <CardTitle className="text-2xl font-bold text-center">Sign In</CardTitle>
               <CardDescription className="text-center">
-                Enter your credentials to access your investment dashboard
+                Enter your credentials to access your portal
               </CardDescription>
             </CardHeader>
             <CardContent className="p-6">

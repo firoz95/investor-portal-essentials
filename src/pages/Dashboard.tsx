@@ -1,8 +1,6 @@
-
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { 
-  DollarSign, 
   FileText, 
   TrendingUp,
   Clock,
@@ -221,7 +219,7 @@ const Dashboard: React.FC = () => {
           <StatusCard
             title="Total Commitment"
             value={<AmountDisplay amount={dashboardSummary.totalCommitment} />}
-            icon={<DollarSign className="h-4 w-4" />}
+            icon={<span className="text-base">₹</span>}
             variant="primary"
           />
           <StatusCard
@@ -258,7 +256,7 @@ const Dashboard: React.FC = () => {
         
         <div ref={capitalActivityRef} id="capital-section" className="pt-8">
           <div className="flex items-center mb-4">
-            <DollarSign className="h-5 w-5 mr-2 text-[#43A66A]" />
+            <span className="text-xl mr-2 text-[#43A66A]">₹</span>
             <h2 className="text-2xl font-bold text-black">Capital Activity</h2>
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
