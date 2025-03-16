@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { 
   capitalCommitment as initialCapitalCommitment,
@@ -10,7 +9,7 @@ import {
   documents as initialDocuments,
   drawdownNotices as initialDrawdownNotices,
   investorProfile as initialInvestorProfile,
-  navData as initialNavData
+  navStatements
 } from "@/utils/mockData";
 
 // Define types for our data
@@ -126,6 +125,17 @@ const AppContext = createContext<AppContextType | undefined>(undefined);
 
 // Create initial investor based on mock data
 const createInitialInvestor = (): Investor => {
+  // Create navData from navStatements
+  const initialNavData = {
+    currentNAV: navStatements[navStatements.length - 1].navPerUnit,
+    initialInvestment: navStatements[0].navPerUnit,
+    changePercentage: ((navStatements[navStatements.length - 1].navPerUnit - navStatements[0].navPerUnit) / navStatements[0].navPerUnit) * 100,
+    chartData: navStatements.map(statement => ({
+      month: statement.period,
+      nav: statement.navPerUnit
+    }))
+  };
+
   return {
     id: "INV-20210515-001",
     name: "Gauri Khan Family Trust",
