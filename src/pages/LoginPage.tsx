@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import Logo from "@/components/Logo";
+import { useAppContext } from "@/context/AppContext";
 
 const LoginPage: React.FC = () => {
   const [username, setUsername] = useState("");
@@ -15,6 +16,7 @@ const LoginPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { investors, setCurrentInvestorByUsername } = useAppContext();
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,18 +32,27 @@ const LoginPage: React.FC = () => {
           description: "Welcome to the New Age Entrepreneurs Fund admin portal.",
         });
         navigate("/admin");
-      } else if (username === "gkft" && password === "gkft") {
-        toast({
-          title: "Login successful",
-          description: "Welcome to the New Age Entrepreneurs Fund investor portal.",
-        });
-        navigate("/dashboard");
       } else {
-        toast({
-          title: "Login failed",
-          description: "Invalid username or password. Please try again.",
-          variant: "destructive",
-        });
+        // Check against investors in AppContext
+        const investor = investors.find(inv => 
+          inv.username === username && inv.password === password
+        );
+        
+        if (investor) {
+          toast({
+            title: "Login successful",
+            description: `Welcome to the New Age Entrepreneurs Fund investor portal, ${investor.name}.`,
+          });
+          // Set current investor in context
+          setCurrentInvestorByUsername(username);
+          navigate("/dashboard");
+        } else {
+          toast({
+            title: "Login failed",
+            description: "Invalid username or password. Please try again.",
+            variant: "destructive",
+          });
+        }
       }
     }, 1000);
   };

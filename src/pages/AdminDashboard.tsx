@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { 
@@ -8,9 +7,7 @@ import {
   Trash2, 
   Search, 
   Eye, 
-  User, 
   Bell, 
-  FileText, 
   Settings,
   Power
 } from "lucide-react";
@@ -29,7 +26,6 @@ import Logo from "@/components/Logo";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
-import { investorProfile } from "@/utils/mockData";
 import { useAppContext } from "@/context/AppContext";
 
 // Empty investor form template
@@ -55,10 +51,14 @@ const emptyInvestorForm = {
   documents: [],
   dateCreated: new Date().toISOString().split('T')[0],
   navData: {
-    currentNAV: 0,
-    initialInvestment: 0,
+    currentNAV: 100000,
+    initialInvestment: 100000,
     changePercentage: 0,
-    chartData: []
+    chartData: [
+      { month: "Jan 2023", nav: 100000 },
+      { month: "Feb 2023", nav: 100000 },
+      { month: "Mar 2023", nav: 100000 }
+    ]
   }
 };
 
@@ -85,7 +85,8 @@ const AdminDashboard: React.FC = () => {
     addDrawdownNotice, 
     updateDrawdownNotice, 
     deleteDrawdownNotice,
-    generateUniqueId
+    generateUniqueId,
+    setCurrentInvestorById
   } = useAppContext();
   
   const [activeTab, setActiveTab] = useState("investors");
@@ -111,7 +112,7 @@ const AdminDashboard: React.FC = () => {
     const { name, value } = e.target;
     setInvestorForm({
       ...investorForm,
-      [name]: name === "totalCommitment" ? parseFloat(value) : value
+      [name]: name === "totalCommitment" ? parseFloat(value) || 0 : value
     });
   };
   
@@ -120,7 +121,7 @@ const AdminDashboard: React.FC = () => {
     const { name, value } = e.target;
     setDrawdownForm({
       ...drawdownForm,
-      [name]: name === "amount" || name === "percentage" ? parseFloat(value) : value
+      [name]: name === "amount" || name === "percentage" ? parseFloat(value) || 0 : value
     });
   };
   
@@ -138,6 +139,11 @@ const AdminDashboard: React.FC = () => {
         }
       };
       
+      // If password is blank, keep the old password
+      if (!updatedInvestor.password && selectedInvestor.password) {
+        updatedInvestor.password = selectedInvestor.password;
+      }
+      
       // Update investor in context
       updateInvestor(selectedInvestor.id, updatedInvestor);
       
@@ -148,14 +154,25 @@ const AdminDashboard: React.FC = () => {
       setIsEditInvestorOpen(false);
     } else {
       // Generate new ID for new investor
+      const commitmentValue = Number(investorForm.totalCommitment);
       const newInvestor = {
         ...investorForm,
         id: generateUniqueId("INV"),
         capitalCommitment: {
-          total: Number(investorForm.totalCommitment),
+          total: commitmentValue,
           class: "Class A"
         },
-        dateCreated: new Date().toISOString().split('T')[0]
+        dateCreated: new Date().toISOString().split('T')[0],
+        navData: {
+          currentNAV: 100000,
+          initialInvestment: 100000,
+          changePercentage: 0,
+          chartData: [
+            { month: "Jan 2023", nav: 100000 },
+            { month: "Feb 2023", nav: 100000 },
+            { month: "Mar 2023", nav: 100000 }
+          ]
+        }
       };
       
       // Add new investor to context
@@ -244,6 +261,7 @@ const AdminDashboard: React.FC = () => {
   // View investor details (navigate to their dashboard)
   const handleViewInvestor = (investor: any) => {
     // Set current investor in context and navigate to dashboard
+    setCurrentInvestorById(investor.id);
     toast({
       title: "Viewing investor",
       description: `Viewing ${investor.name}'s dashboard.`
@@ -936,3 +954,4 @@ const AdminDashboard: React.FC = () => {
 };
 
 export default AdminDashboard;
+

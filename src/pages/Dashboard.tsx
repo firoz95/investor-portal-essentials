@@ -3,24 +3,16 @@ import { useNavigate } from "react-router-dom";
 import { 
   FileText, 
   TrendingUp,
-  Clock,
   LayoutDashboard,
   PieChart,
   Users,
   Info,
-  ChevronRight,
   Power
 } from "lucide-react";
 import StatusCard from "@/components/StatusCard";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import AmountDisplay from "@/components/AmountDisplay";
-import { 
-  dashboardSummary, 
-  formatCurrency, 
-  formatDate,
-  capitalCommitment,
-} from "@/utils/mockData";
+import { formatCurrency, formatDate } from "@/utils/mockData";
 import NotificationsSection from "@/components/NotificationsSection";
 import NAVSection from "@/components/NAVSection";
 import FundInvestmentsSection from "@/components/FundInvestmentsSection";
@@ -30,7 +22,6 @@ import CoInvestmentsSection from "@/components/CoInvestmentsSection";
 import InvestorInfoSection from "@/components/InvestorInfoSection";
 import FundTechnicalsSection from "@/components/FundTechnicalsSection";
 import DisclaimerSection from "@/components/DisclaimerSection";
-import { investorProfile } from "@/utils/mockData";
 import Logo from "@/components/Logo";
 import {
   NavigationMenu,
@@ -38,9 +29,8 @@ import {
   NavigationMenuItem,
   NavigationMenuList,
   NavigationMenuTrigger,
-  navigationMenuTriggerStyle,
-} from "@/components/ui/navigation-menu"
-import { cn } from "@/lib/utils";
+} from "@/components/ui/navigation-menu";
+import { useAppContext } from "@/context/AppContext";
 
 interface SectionRef {
   id: string;
@@ -53,8 +43,12 @@ const Dashboard: React.FC = () => {
   const navigate = useNavigate();
   const [showTopBar, setShowTopBar] = useState(false);
   const [activeSection, setActiveSection] = useState("dashboard");
+  const { currentInvestor } = useAppContext();
   
-  // Create refs for each section
+  if (!currentInvestor) {
+    return null;
+  }
+  
   const dashboardRef = useRef<HTMLDivElement>(null);
   const navRef = useRef<HTMLDivElement>(null);
   const capitalActivityRef = useRef<HTMLDivElement>(null);
@@ -63,7 +57,6 @@ const Dashboard: React.FC = () => {
   const investorInfoRef = useRef<HTMLDivElement>(null);
   const fundTechnicalsRef = useRef<HTMLDivElement>(null);
   
-  // Define all sections with updated icons
   const sections: SectionRef[] = [
     { id: "dashboard", ref: dashboardRef, label: "Dashboard", icon: <LayoutDashboard className="h-4 w-4 mr-1" /> },
     { id: "nav", ref: navRef, label: "NAV", icon: <TrendingUp className="h-4 w-4 mr-1" /> },
@@ -74,18 +67,15 @@ const Dashboard: React.FC = () => {
     { id: "fund", ref: fundTechnicalsRef, label: "Fund Info", icon: <Info className="h-4 w-4 mr-1" /> },
   ];
   
-  // Handle scroll events
   useEffect(() => {
     const handleScroll = () => {
-      // Show topbar after scrolling down 100px
       if (window.scrollY > 100) {
         setShowTopBar(true);
       } else {
         setShowTopBar(false);
       }
       
-      // Determine active section based on scroll position
-      const scrollPosition = window.scrollY + 200; // Add offset to account for header height
+      const scrollPosition = window.scrollY + 200;
       
       for (let i = sections.length - 1; i >= 0; i--) {
         const section = sections[i];
@@ -103,15 +93,21 @@ const Dashboard: React.FC = () => {
     };
   }, []);
   
-  // Scroll to section function
   const scrollToSection = (sectionId: string) => {
     const section = sections.find(s => s.id === sectionId);
     if (section?.ref.current) {
       window.scrollTo({
-        top: section.ref.current.offsetTop - 80, // Offset for header
+        top: section.ref.current.offsetTop - 80,
         behavior: 'smooth'
       });
     }
+  };
+
+  const dashboardSummary = {
+    totalCommitment: currentInvestor.capitalCommitment.total,
+    totalContributed: currentInvestor.capitalContributions.reduce((total, item) => total + item.amount, 0),
+    currentNav: currentInvestor.navData.currentNAV,
+    performanceSinceInception: currentInvestor.navData.changePercentage
   };
 
   return (
@@ -139,7 +135,6 @@ const Dashboard: React.FC = () => {
               </ul>
             </nav>
             
-            {/* Mobile dropdown for navigation */}
             <div className="md:hidden ml-4">
               <NavigationMenu>
                 <NavigationMenuList>
@@ -195,7 +190,7 @@ const Dashboard: React.FC = () => {
             <div className="flex items-center space-x-4">
               <div className="text-sm">
                 <span className="text-muted-foreground">Welcome, </span>
-                <span className="font-medium">{investorProfile.name}</span>
+                <span className="font-medium">{currentInvestor.name}</span>
               </div>
               <Button variant="outline" size="sm" onClick={() => navigate("/login")}>
                 Logout
@@ -240,8 +235,8 @@ const Dashboard: React.FC = () => {
           />
           <StatusCard
             title="Class of Units"
-            value={capitalCommitment.class}
-            subtitle={<AmountDisplay amount={capitalCommitment.unitPrice} /> + " per unit"}
+            value={currentInvestor.capitalCommitment.class}
+            subtitle={<AmountDisplay amount={100000} /> + " per unit"}
             icon={<FileText className="h-4 w-4" />}
           />
         </div>
@@ -275,7 +270,7 @@ const Dashboard: React.FC = () => {
         
         <div ref={documentsRef} id="documents-section" className="pt-8">
           <div className="flex items-center mb-4">
-            <FileText className="h-5 w-5 mr-2 text-[#43A66A]" />
+            <FileText className="h-5 w-4 mr-2 text-[#43A66A]" />
             <h2 className="text-2xl font-bold text-black">Documents</h2>
           </div>
           <DocumentsSection />
