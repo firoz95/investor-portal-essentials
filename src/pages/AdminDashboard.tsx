@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { 
   Users, 
@@ -30,71 +30,11 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { investorProfile } from "@/utils/mockData";
-
-// Sample data for the admin dashboard
-const investorsList = [
-  {
-    id: "INV-20210515-001",
-    name: "Gauri Khan Family Trust",
-    email: "gauri.khan@example.com",
-    contactPerson: "Gauri Khan",
-    contactPhone: "+91 98765 43210",
-    totalCommitment: 20000000,
-    username: "gkft",
-    password: "gkft",
-    dateCreated: "2021-05-15",
-    status: "Active"
-  },
-  {
-    id: "INV-20210620-002",
-    name: "Sharma Holdings",
-    email: "vk.sharma@example.com",
-    contactPerson: "Vikram Sharma",
-    contactPhone: "+91 87654 32109",
-    totalCommitment: 15000000,
-    username: "sharma",
-    password: "sharma123",
-    dateCreated: "2021-06-20",
-    status: "Active"
-  },
-  {
-    id: "INV-20210810-003",
-    name: "Patel Investments",
-    email: "nitin.patel@example.com",
-    contactPerson: "Nitin Patel",
-    contactPhone: "+91 76543 21098",
-    totalCommitment: 25000000,
-    username: "patel",
-    password: "patel123",
-    dateCreated: "2021-08-10",
-    status: "Inactive"
-  }
-];
-
-// Sample drawdown notices
-const drawdownNotices = [
-  {
-    id: "DD-2023-001",
-    date: "2023-02-15",
-    dueDate: "2023-02-28",
-    amount: 2000000,
-    percentage: 10,
-    purpose: "Investment in Native Milk",
-    status: "Sent"
-  },
-  {
-    id: "DD-2023-002",
-    date: "2023-05-10",
-    dueDate: "2023-05-25",
-    amount: 3000000,
-    percentage: 15,
-    purpose: "Investment in JetSynthesys",
-    status: "Draft"
-  }
-];
+import { useAppContext } from "@/context/AppContext";
 
 // Empty investor form template
 const emptyInvestorForm = {
+  id: "",
   name: "",
   email: "",
   contactPerson: "",
@@ -103,12 +43,28 @@ const emptyInvestorForm = {
   username: "",
   password: "",
   address: "",
-  accreditationStatus: "Pending",
-  status: "Active"
+  status: "Active",
+  capitalCommitment: {
+    total: 0,
+    class: "Class A"
+  },
+  capitalContributions: [],
+  feeCharges: [],
+  distributions: [],
+  coInvestments: [],
+  documents: [],
+  dateCreated: new Date().toISOString().split('T')[0],
+  navData: {
+    currentNAV: 0,
+    initialInvestment: 0,
+    changePercentage: 0,
+    chartData: []
+  }
 };
 
 // Empty drawdown form template
 const emptyDrawdownForm = {
+  id: "",
   date: new Date().toISOString().split('T')[0],
   dueDate: "",
   amount: 0,
@@ -120,6 +76,18 @@ const emptyDrawdownForm = {
 const AdminDashboard: React.FC = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { 
+    investors, 
+    addInvestor, 
+    updateInvestor, 
+    deleteInvestor, 
+    drawdownNotices, 
+    addDrawdownNotice, 
+    updateDrawdownNotice, 
+    deleteDrawdownNotice,
+    generateUniqueId
+  } = useAppContext();
+  
   const [activeTab, setActiveTab] = useState("investors");
   const [searchTerm, setSearchTerm] = useState("");
   const [isCreateInvestorOpen, setIsCreateInvestorOpen] = useState(false);
@@ -132,7 +100,7 @@ const AdminDashboard: React.FC = () => {
   const [drawdownForm, setDrawdownForm] = useState(emptyDrawdownForm);
   
   // Filtered investors based on search term
-  const filteredInvestors = investorsList.filter(investor => 
+  const filteredInvestors = investors.filter(investor => 
     investor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     investor.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
     investor.id.toLowerCase().includes(searchTerm.toLowerCase())
@@ -160,13 +128,39 @@ const AdminDashboard: React.FC = () => {
   const handleInvestorSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (isEditInvestorOpen) {
+    if (isEditInvestorOpen && selectedInvestor) {
+      // Update the capital commitment based on totalCommitment
+      const updatedInvestor = {
+        ...investorForm,
+        capitalCommitment: {
+          ...investorForm.capitalCommitment,
+          total: Number(investorForm.totalCommitment)
+        }
+      };
+      
+      // Update investor in context
+      updateInvestor(selectedInvestor.id, updatedInvestor);
+      
       toast({
         title: "Investor updated",
         description: `${investorForm.name} has been updated successfully.`
       });
       setIsEditInvestorOpen(false);
     } else {
+      // Generate new ID for new investor
+      const newInvestor = {
+        ...investorForm,
+        id: generateUniqueId("INV"),
+        capitalCommitment: {
+          total: Number(investorForm.totalCommitment),
+          class: "Class A"
+        },
+        dateCreated: new Date().toISOString().split('T')[0]
+      };
+      
+      // Add new investor to context
+      addInvestor(newInvestor);
+      
       toast({
         title: "Investor created",
         description: `${investorForm.name} has been created with username: ${investorForm.username}`
@@ -182,13 +176,25 @@ const AdminDashboard: React.FC = () => {
   const handleDrawdownSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (isEditDrawdownOpen) {
+    if (isEditDrawdownOpen && selectedDrawdown) {
+      // Update drawdown in context
+      updateDrawdownNotice(selectedDrawdown.id, drawdownForm);
+      
       toast({
         title: "Drawdown notice updated",
         description: `Drawdown notice has been updated successfully.`
       });
       setIsEditDrawdownOpen(false);
     } else {
+      // Generate new ID for new drawdown
+      const newDrawdown = {
+        ...drawdownForm,
+        id: generateUniqueId("DD")
+      };
+      
+      // Add new drawdown to context
+      addDrawdownNotice(newDrawdown);
+      
       toast({
         title: "Drawdown notice created",
         description: `New drawdown notice has been created.`
@@ -203,7 +209,10 @@ const AdminDashboard: React.FC = () => {
   // Open edit investor dialog
   const handleEditInvestor = (investor: any) => {
     setSelectedInvestor(investor);
-    setInvestorForm(investor);
+    setInvestorForm({
+      ...investor,
+      totalCommitment: investor.capitalCommitment.total
+    });
     setIsEditInvestorOpen(true);
   };
   
@@ -214,9 +223,27 @@ const AdminDashboard: React.FC = () => {
     setIsEditDrawdownOpen(true);
   };
   
+  // Delete investor
+  const handleDeleteInvestor = (investor: any) => {
+    deleteInvestor(investor.id);
+    toast({
+      title: "Investor deleted",
+      description: `${investor.name} has been removed from the system.`
+    });
+  };
+  
+  // Delete drawdown notice
+  const handleDeleteDrawdown = (drawdown: any) => {
+    deleteDrawdownNotice(drawdown.id);
+    toast({
+      title: "Drawdown notice deleted",
+      description: `Drawdown notice ${drawdown.id} has been removed from the system.`
+    });
+  };
+  
   // View investor details (navigate to their dashboard)
   const handleViewInvestor = (investor: any) => {
-    // In a real application, this would show the investor view
+    // Set current investor in context and navigate to dashboard
     toast({
       title: "Viewing investor",
       description: `Viewing ${investor.name}'s dashboard.`
@@ -412,20 +439,6 @@ const AdminDashboard: React.FC = () => {
                           />
                         </div>
                         <div className="space-y-2">
-                          <label htmlFor="accreditationStatus" className="text-sm font-medium">Accreditation Status</label>
-                          <select 
-                            id="accreditationStatus" 
-                            name="accreditationStatus" 
-                            className="w-full p-2 border rounded"
-                            value={investorForm.accreditationStatus}
-                            onChange={(e) => setInvestorForm({...investorForm, accreditationStatus: e.target.value})}
-                          >
-                            <option value="Pending">Pending</option>
-                            <option value="Verified">Verified</option>
-                            <option value="Not Verified">Not Verified</option>
-                          </select>
-                        </div>
-                        <div className="space-y-2">
                           <label htmlFor="status" className="text-sm font-medium">Status</label>
                           <select 
                             id="status" 
@@ -474,7 +487,7 @@ const AdminDashboard: React.FC = () => {
                           <TableCell>{investor.name}</TableCell>
                           <TableCell>{investor.contactPerson}</TableCell>
                           <TableCell className="hidden md:table-cell">{investor.email}</TableCell>
-                          <TableCell className="hidden md:table-cell">{formatCurrency(investor.totalCommitment)}</TableCell>
+                          <TableCell className="hidden md:table-cell">{formatCurrency(investor.capitalCommitment.total)}</TableCell>
                           <TableCell className="hidden lg:table-cell">{formatDate(investor.dateCreated)}</TableCell>
                           <TableCell>
                             <span className={`px-2 py-1 rounded-full text-xs ${
@@ -505,6 +518,7 @@ const AdminDashboard: React.FC = () => {
                                 variant="ghost" 
                                 size="icon" 
                                 title="Delete"
+                                onClick={() => handleDeleteInvestor(investor)}
                                 className="text-destructive hover:text-destructive/90"
                               >
                                 <Trash2 className="h-4 w-4" />
@@ -675,6 +689,7 @@ const AdminDashboard: React.FC = () => {
                               variant="ghost" 
                               size="icon" 
                               title="Delete"
+                              onClick={() => handleDeleteDrawdown(notice)}
                               className="text-destructive hover:text-destructive/90"
                             >
                               <Trash2 className="h-4 w-4" />
@@ -781,23 +796,8 @@ const AdminDashboard: React.FC = () => {
                       name="password" 
                       type="password" 
                       value={investorForm.password} 
-                      onChange={handleInvestorFormChange} 
                       placeholder="Leave blank to keep current password"
                     />
-                  </div>
-                  <div className="space-y-2">
-                    <label htmlFor="edit-accreditationStatus" className="text-sm font-medium">Accreditation Status</label>
-                    <select 
-                      id="edit-accreditationStatus" 
-                      name="accreditationStatus" 
-                      className="w-full p-2 border rounded"
-                      value={investorForm.accreditationStatus}
-                      onChange={(e) => setInvestorForm({...investorForm, accreditationStatus: e.target.value})}
-                    >
-                      <option value="Pending">Pending</option>
-                      <option value="Verified">Verified</option>
-                      <option value="Not Verified">Not Verified</option>
-                    </select>
                   </div>
                   <div className="space-y-2">
                     <label htmlFor="edit-status" className="text-sm font-medium">Status</label>
