@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { 
   capitalCommitment as initialCapitalCommitment,
@@ -9,7 +10,7 @@ import {
   documents as initialDocuments,
   drawdownNotices as initialDrawdownNotices,
   investorProfile as initialInvestorProfile,
-  navStatements as initialNavStatements
+  navData as initialNavData
 } from "@/utils/mockData";
 
 // Define types for our data
@@ -123,19 +124,8 @@ interface AppContextType {
 // Create context
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
-// Create initial investor based on mock data and NAV data
+// Create initial investor based on mock data
 const createInitialInvestor = (): Investor => {
-  // Create NAV data from navStatements
-  const navData = {
-    currentNAV: initialNavStatements[initialNavStatements.length - 1]?.totalNav || 0,
-    initialInvestment: initialCapitalCommitment.total,
-    changePercentage: initialNavStatements[initialNavStatements.length - 1]?.change || 0,
-    chartData: initialNavStatements.map(statement => ({
-      month: statement.period,
-      nav: statement.navPerUnit
-    }))
-  };
-
   return {
     id: "INV-20210515-001",
     name: "Gauri Khan Family Trust",
@@ -154,7 +144,7 @@ const createInitialInvestor = (): Investor => {
     distributions: initialDistributions,
     coInvestments: initialCoInvestments,
     documents: initialDocuments,
-    navData: navData
+    navData: initialNavData
   };
 };
 
