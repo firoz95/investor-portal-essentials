@@ -1,6 +1,6 @@
 
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { ChevronRight, Lock, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,57 +8,35 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import Logo from "@/components/Logo";
-import { useAppContext } from "@/context/AppContext";
+import { useAuth } from "@/context/AuthContext";
 
 const LoginPage: React.FC = () => {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { investors, setCurrentInvestorByUsername } = useAppContext();
+  const { signIn, isAdmin } = useAuth();
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
-    // Check credentials
-    setTimeout(() => {
-      setIsLoading(false);
+    try {
+      const { error } = await signIn(email, password);
       
-      if (username === "superadmin" && password === "NAFA@1234") {
+      if (!error) {
         toast({
           title: "Login successful",
-          description: "Welcome to the New Age Entrepreneurs Fund admin portal.",
+          description: "Welcome to the New Age Entrepreneurs Fund portal.",
         });
-        // Set admin flag in session storage (temporary until Supabase is integrated)
-        sessionStorage.setItem('isAdmin', 'true');
-        navigate("/admin");
-      } else {
-        // Check against investors in AppContext
-        const investor = investors.find(inv => 
-          inv.username === username && inv.password === password
-        );
         
-        if (investor) {
-          toast({
-            title: "Login successful",
-            description: `Welcome to the New Age Entrepreneurs Fund investor portal, ${investor.name}.`,
-          });
-          // Set current investor in context
-          setCurrentInvestorByUsername(username);
-          // Clear any admin session
-          sessionStorage.removeItem('isAdmin');
-          navigate(`/investor/${investor.id}`);
-        } else {
-          toast({
-            title: "Login failed",
-            description: "Invalid username or password. Please try again.",
-            variant: "destructive",
-          });
-        }
+        // Check if admin and redirect accordingly
+        navigate(isAdmin ? "/admin" : "/dashboard");
       }
-    }, 1000);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -86,16 +64,16 @@ const LoginPage: React.FC = () => {
             <CardContent className="p-6">
               <form onSubmit={handleLogin} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="username">Username</Label>
+                  <Label htmlFor="email">Email</Label>
                   <div className="relative">
                     <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                     <Input
-                      id="username"
-                      type="text"
-                      placeholder="username"
+                      id="email"
+                      type="email"
+                      placeholder="email@example.com"
                       className="pl-10"
-                      value={username}
-                      onChange={(e) => setUsername(e.target.value)}
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
                       required
                     />
                   </div>
@@ -103,12 +81,12 @@ const LoginPage: React.FC = () => {
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <Label htmlFor="password">Password</Label>
-                    <a 
-                      href="#" 
+                    <Link 
+                      to="/forgot-password" 
                       className="text-xs text-primary hover:underline transition-all"
                     >
                       Forgot password?
-                    </a>
+                    </Link>
                   </div>
                   <div className="relative">
                     <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -127,7 +105,7 @@ const LoginPage: React.FC = () => {
                   className="w-full mt-6 group"
                   disabled={isLoading}
                 >
-                  <span>Sign In</span>
+                  <span>{isLoading ? "Signing In..." : "Sign In"}</span>
                   <ChevronRight className="ml-2 h-4 w-4 transform transition-transform group-hover:translate-x-1" />
                 </Button>
               </form>
@@ -135,9 +113,9 @@ const LoginPage: React.FC = () => {
             <CardFooter className="flex flex-col space-y-4 p-6 pt-0">
               <div className="text-center text-sm text-muted-foreground">
                 Don't have an account?{" "}
-                <a href="#" className="text-primary font-medium hover:underline">
-                  Contact your fund administrator
-                </a>
+                <Link to="/signup" className="text-primary font-medium hover:underline">
+                  Sign up
+                </Link>
               </div>
             </CardFooter>
           </Card>

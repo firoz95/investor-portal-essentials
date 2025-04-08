@@ -75,9 +75,6 @@ const DocUploader: React.FC<DocUploaderProps> = ({
     
     setUploading(true);
     try {
-      // Here we would normally upload to Supabase
-      // For now just simulate upload with a timeout
-      await new Promise(resolve => setTimeout(resolve, 1000));
       onUpload(selectedFile);
       toast({
         title: "File uploaded",

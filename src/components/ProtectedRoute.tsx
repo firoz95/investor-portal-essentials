@@ -1,7 +1,7 @@
 
 import React from "react";
 import { Navigate, useParams } from "react-router-dom";
-import { useAppContext } from "@/context/AppContext";
+import { useAuth } from "@/context/AuthContext";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -12,27 +12,36 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   children,
   requireAdmin = false
 }) => {
-  const { currentInvestor } = useAppContext();
+  const { user, isAdmin, isLoading } = useAuth();
   const params = useParams();
   
-  // If requiring admin access
-  if (requireAdmin) {
-    // Check if we have admin access (superadmin is hardcoded for now - would be replaced with Supabase auth)
-    const isAdmin = sessionStorage.getItem('isAdmin') === 'true';
-    if (!isAdmin) {
-      return <Navigate to="/login" replace />;
-    }
-    return <>{children}</>;
+  // Show loading state
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      </div>
+    );
   }
   
-  // For investor routes
-  if (!currentInvestor) {
+  // If requiring admin access
+  if (requireAdmin && !isAdmin) {
     return <Navigate to="/login" replace />;
   }
   
-  // If we're on an investor/:id route, verify they can only access their own data
-  if (params.id && currentInvestor.id !== params.id) {
-    return <Navigate to={`/investor/${currentInvestor.id}`} replace />;
+  // For authenticated routes
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+  
+  // For investor routes with specific IDs, verify access rights
+  // In a real app, you'd check if the logged-in user can access this investor's data
+  if (params.id && !isAdmin) {
+    // Check if the user is trying to access their own profile
+    // This is just a simple check - in a real app you'd verify permissions more thoroughly
+    if (user.id !== params.id) {
+      return <Navigate to={`/investor/${user.id}`} replace />;
+    }
   }
   
   return <>{children}</>;
