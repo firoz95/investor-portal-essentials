@@ -12,6 +12,7 @@ import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminInvestorDetail from "./pages/admin/AdminInvestorDetail"; 
+import AdminUsersPage from "./pages/admin/AdminUsersPage";
 import NotFound from "./pages/NotFound";
 import { AppProvider } from "./context/AppContext";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -59,6 +60,14 @@ const App = () => (
                 element={
                   <ProtectedRoute requireAdmin={true}>
                     <AdminDashboard />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/admin/users" 
+                element={
+                  <ProtectedRoute requireAdmin={true}>
+                    <AdminUsersPage />
                   </ProtectedRoute>
                 } 
               />

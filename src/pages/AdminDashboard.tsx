@@ -6,6 +6,8 @@ import { Users, FileText, MessageSquare } from "lucide-react";
 import InvestorList from "./admin/InvestorList";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/context/AuthContext";
+import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 
 const AdminDashboard: React.FC = () => {
   const { user } = useAuth();
@@ -15,8 +17,16 @@ const AdminDashboard: React.FC = () => {
       <div className="container mx-auto py-6">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold">Admin Dashboard</h1>
-          <div className="text-sm text-muted-foreground">
-            Logged in as: <span className="font-medium">{user?.email}</span>
+          <div className="flex items-center space-x-4">
+            <div className="text-sm text-muted-foreground">
+              Logged in as: <span className="font-medium">{user?.email}</span>
+            </div>
+            <Button asChild variant="outline" size="sm">
+              <Link to="/admin/users">
+                <Users className="h-4 w-4 mr-2" />
+                Manage Users
+              </Link>
+            </Button>
           </div>
         </div>
         

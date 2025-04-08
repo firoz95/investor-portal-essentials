@@ -63,17 +63,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   // Check if user is admin by querying a role or custom claim
   const checkUserRole = async (userId: string) => {
     try {
-      // For now, hardcode some admin users by their IDs
-      // In a real app, you would check a roles table or custom claims
+      // Check user role from the users table
       const { data, error } = await supabase
         .from('users')
-        .select('email, role')
+        .select('*')
         .eq('id', userId)
         .maybeSingle();
       
       if (error) throw error;
       
-      // Consider users with 'ADMIN' investor_code as admin users
+      // Set admin status based on role field
       setIsAdmin(data?.role === 'admin');
     } catch (error) {
       console.error('Error checking user role:', error);
