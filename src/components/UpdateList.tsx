@@ -20,8 +20,9 @@ import { format } from "date-fns";
 
 interface Update {
   id: string;
-  content: string;
-  date: Date;
+  message: string;
+  posted_at: Date | string;
+  posted_by: string;
   investorId?: string; // Optional - specific to an investor
 }
 
@@ -89,9 +90,11 @@ const UpdateList: React.FC<UpdateListProps> = ({
               >
                 <div className="flex items-center text-sm text-muted-foreground mb-2">
                   <Calendar className="h-4 w-4 mr-1" />
-                  {format(update.date, 'PPP')}
+                  {typeof update.posted_at === 'string' 
+                    ? new Date(update.posted_at).toLocaleDateString() 
+                    : format(update.posted_at, 'PPP')}
                 </div>
-                <p className="whitespace-pre-wrap">{update.content}</p>
+                <p className="whitespace-pre-wrap">{update.message}</p>
               </div>
             ))}
           </div>

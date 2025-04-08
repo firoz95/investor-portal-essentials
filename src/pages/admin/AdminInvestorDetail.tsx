@@ -31,7 +31,7 @@ interface Document {
 interface Update {
   id: string;
   message: string;
-  posted_at: Date;
+  posted_at: string | Date;
   posted_by: string;
 }
 
@@ -168,7 +168,7 @@ const AdminInvestorDetail = () => {
       if (data) {
         setUpdates(prev => [...prev, {
           ...data[0],
-          posted_at: new Date()
+          posted_at: new Date(data[0].posted_at)
         } as Update]);
       }
       

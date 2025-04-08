@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useParams, Navigate } from "react-router-dom";
 import Layout from "@/components/Layout";
@@ -34,7 +33,7 @@ interface Document {
 interface Update {
   id: string;
   message: string;
-  posted_at: string;
+  posted_at: string | Date;
   posted_by: string;
 }
 
