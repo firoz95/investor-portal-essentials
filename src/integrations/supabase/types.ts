@@ -11,27 +11,27 @@ export type Database = {
     Tables: {
       documents: {
         Row: {
-          file_url: string | null
+          created_at: string | null
           filename: string | null
           id: string
+          onedrive_url: string | null
           type: string | null
-          uploaded_at: string | null
           user_id: string | null
         }
         Insert: {
-          file_url?: string | null
+          created_at?: string | null
           filename?: string | null
           id?: string
+          onedrive_url?: string | null
           type?: string | null
-          uploaded_at?: string | null
           user_id?: string | null
         }
         Update: {
-          file_url?: string | null
+          created_at?: string | null
           filename?: string | null
           id?: string
+          onedrive_url?: string | null
           type?: string | null
-          uploaded_at?: string | null
           user_id?: string | null
         }
         Relationships: []
@@ -68,6 +68,7 @@ export type Database = {
           investor_code: string | null
           name: string | null
           phone: string | null
+          role: string | null
         }
         Insert: {
           created_at?: string | null
@@ -76,6 +77,7 @@ export type Database = {
           investor_code?: string | null
           name?: string | null
           phone?: string | null
+          role?: string | null
         }
         Update: {
           created_at?: string | null
@@ -84,6 +86,7 @@ export type Database = {
           investor_code?: string | null
           name?: string | null
           phone?: string | null
+          role?: string | null
         }
         Relationships: []
       }

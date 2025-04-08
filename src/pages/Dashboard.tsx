@@ -17,7 +17,7 @@ const Dashboard: React.FC = () => {
     
     // Redirect based on user role
     if (isAdmin) {
-      navigate("/admin");
+      navigate("/admin/dashboard");
     } else {
       navigate(`/investor/${user.id}`);
     }

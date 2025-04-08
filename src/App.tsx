@@ -55,6 +55,14 @@ const App = () => (
                 } 
               />
               <Route 
+                path="/admin/dashboard" 
+                element={
+                  <ProtectedRoute requireAdmin={true}>
+                    <AdminDashboard />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
                 path="/admin/investor/:id" 
                 element={
                   <ProtectedRoute requireAdmin={true}>

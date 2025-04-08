@@ -32,7 +32,7 @@ const LoginPage: React.FC = () => {
         });
         
         // Check if admin and redirect accordingly
-        navigate(isAdmin ? "/admin" : "/dashboard");
+        navigate(isAdmin ? "/admin/dashboard" : `/dashboard`);
       }
     } finally {
       setIsLoading(false);

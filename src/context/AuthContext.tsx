@@ -67,14 +67,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       // In a real app, you would check a roles table or custom claims
       const { data, error } = await supabase
         .from('users')
-        .select('email, investor_code')
+        .select('email, role')
         .eq('id', userId)
         .maybeSingle();
       
       if (error) throw error;
       
       // Consider users with 'ADMIN' investor_code as admin users
-      setIsAdmin(data?.investor_code === 'ADMIN');
+      setIsAdmin(data?.role === 'admin');
     } catch (error) {
       console.error('Error checking user role:', error);
       setIsAdmin(false);
