@@ -31,6 +31,8 @@ const LoginPage: React.FC = () => {
           title: "Login successful",
           description: "Welcome to the New Age Entrepreneurs Fund admin portal.",
         });
+        // Set admin flag in session storage (temporary until Supabase is integrated)
+        sessionStorage.setItem('isAdmin', 'true');
         navigate("/admin");
       } else {
         // Check against investors in AppContext
@@ -45,7 +47,9 @@ const LoginPage: React.FC = () => {
           });
           // Set current investor in context
           setCurrentInvestorByUsername(username);
-          navigate("/dashboard");
+          // Clear any admin session
+          sessionStorage.removeItem('isAdmin');
+          navigate(`/investor/${investor.id}`);
         } else {
           toast({
             title: "Login failed",

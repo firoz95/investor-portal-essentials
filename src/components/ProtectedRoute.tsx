@@ -1,6 +1,6 @@
 
 import React from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, useParams } from "react-router-dom";
 import { useAppContext } from "@/context/AppContext";
 
 interface ProtectedRouteProps {
@@ -13,16 +13,26 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   requireAdmin = false
 }) => {
   const { currentInvestor } = useAppContext();
+  const params = useParams();
   
-  // If we're requiring admin and not on superadmin route, redirect to login
+  // If requiring admin access
   if (requireAdmin) {
-    // This would need additional logic if we have admin users in the system
+    // Check if we have admin access (superadmin is hardcoded for now - would be replaced with Supabase auth)
+    const isAdmin = sessionStorage.getItem('isAdmin') === 'true';
+    if (!isAdmin) {
+      return <Navigate to="/login" replace />;
+    }
+    return <>{children}</>;
+  }
+  
+  // For investor routes
+  if (!currentInvestor) {
     return <Navigate to="/login" replace />;
   }
   
-  // For investor routes, check if currentInvestor exists
-  if (!currentInvestor) {
-    return <Navigate to="/login" replace />;
+  // If we're on an investor/:id route, verify they can only access their own data
+  if (params.id && currentInvestor.id !== params.id) {
+    return <Navigate to={`/investor/${currentInvestor.id}`} replace />;
   }
   
   return <>{children}</>;
